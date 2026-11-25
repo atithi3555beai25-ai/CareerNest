@@ -1,29 +1,21 @@
-# CareerNest — 56 Simple Java Classes
+# CareerNest — Collections and File Handling
+Campus placement terminal prototype. Java 17 or newer; no external libraries or database server required.
 
-Terminal-based campus placement system for a second-year Java OOP coursework demonstration. Uses Java 17, MySQL and JDBC. All 56 class names match the four-member plan. Classes are in the default package for ease of learning.
+## Run from project root (PowerShell)
+```powershell
+mkdir out
+javac -d out src/main/java/*.java
+java -cp out Main
+```
+Alternatively: `mvn clean compile exec:java`.
 
-## Run
-1. Install JDK 17+, Maven and MySQL Server.
-2. Run `database/careernest.sql` in MySQL Workbench.
-3. In the project directory, set database settings in PowerShell:
-   ```powershell
-   $env:DB_USER="root"
-   $env:DB_PASSWORD="your_mysql_password"
-   ```
-   Optionally set `DB_URL` (default: `jdbc:mysql://localhost:3306/careernest`).
-4. Run `mvn clean compile exec:java`.
+Records are stored in `data/` as pipe-separated text. Do not enter pipe characters in names or titles. Data is saved after each change. Run from the same project folder each time. Old database records are not migrated. Single-user prototype; do not run multiple instances against the same data. Back up the data folder before editing it manually.
 
-## Typical demo
-Register student -> Add company -> Add job -> Check eligibility -> Apply -> View history -> Shortlist -> Schedule interview.
+## Scope
+14 menu options: students, companies, jobs, eligibility, applications, interviews and search. Login/profile helper classes are retained but not exposed in the menu. No role-based access control. Remaining course topics such as threading and sorting can be added if required.
 
-## Member split
-- Member 1 (14): Person, Student, User, StudentProfile, Education, Skill, Certification, StudentManager, UserValidator, ProfileManager, RegistrationService, LoginService, StudentDAO, UserDAO.
-- Member 2 (14): Company, Recruiter, Job, Interview, JobCategory, CompanyManager, RecruiterManager, JobManager, InterviewManager, RecruitmentDrive, JobSearchService, CompanyDAO, JobDAO, InterviewDAO.
-- Member 3 (14): Application, ApplicationStatus, EligibilityResult, DuplicateApplicationException, IneligibleStudentException, CgpaEligibilityRule, BranchEligibilityRule, BacklogEligibilityRule, ApplicationValidator, ApplicationHistoryService, EligibilityService, EligibilityRuleEngine, ApplicationService, ApplicationDAO.
-- Member 4 (14): Main, MainMenu, MenuRenderer, ConsoleTableFormatter, DatabaseException, InputHandler, InputValidator, DatabaseConfig, SessionManager, ErrorHandler, ConsoleNavigator, DBConnection, DatabaseInitializer, TransactionManager.
-
-## Notes
-- This is a classroom demonstration, not a production system: there is no secure login/role authorization, and some supporting classes are simple building blocks rather than separate menu options.
-- IDs are entered manually for students, companies and jobs; application/interview IDs are auto-generated.
-- The database enforces duplicate-application prevention too.
-- SQL connection credentials should not be committed in source code.
+## Member distribution
+1. Person, Student, StudentProfile, Education, Skill, Certification, StudentManager, ProfileManager, RegistrationService, StudentRepository, InputHandler, InputValidator, StorageInitializer, ErrorHandler.
+2. Company, Recruiter, Job, JobCategory, CompanyManager, RecruiterManager, JobManager, RecruitmentDrive, JobSearchService, CompanyRepository, JobRepository, StorageConfig, FileStorage, StorageException.
+3. Application, ApplicationStatus, EligibilityResult, DuplicateApplicationException, IneligibleStudentException, CgpaEligibilityRule, BranchEligibilityRule, BacklogEligibilityRule, ApplicationValidator, ApplicationHistoryService, EligibilityService, EligibilityRuleEngine, ApplicationService, ApplicationRepository, EligibilityRule (interface).
+4. Interview, InterviewManager, InterviewRepository, User, UserRepository, UserValidator, LoginService, SessionManager, Main, MainMenu, MenuRenderer, ConsoleTableFormatter, ConsoleNavigator, RecordValidator.

@@ -3,7 +3,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        DatabaseInitializer db = new DatabaseInitializer();
+        StorageInitializer db = new StorageInitializer();
 
         if (!db.ready()) {
             return;
@@ -105,8 +105,8 @@ public class Main {
             int studentId = InputHandler.number("Student ID: ");
             int jobId = InputHandler.number("Job ID: ");
 
-            Student student = new StudentDAO().find(studentId);
-            Job job = new JobDAO().find(jobId);
+            Student student = new StudentRepository().find(studentId);
+            Job job = new JobRepository().find(jobId);
 
             EligibilityResult result = new EligibilityService().check(student, job);
 
@@ -134,7 +134,7 @@ public class Main {
 
             System.out.println("===== All Applications =====");
 
-            new ApplicationDAO().printAll();
+            new ApplicationRepository().printAll();
         }
 
         else if (choice == 11) {
@@ -159,7 +159,7 @@ public class Main {
                 throw new IllegalArgumentException("Invalid status");
             }
 
-            new ApplicationDAO().updateStatus(id, value);
+            new ApplicationRepository().updateStatus(id, value);
 
             System.out.println("Application status updated!");
         }

@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class StudentManager {
 
-    private StudentDAO dao = new StudentDAO();
+    private StudentRepository dao = new StudentRepository();
 
     public void add(Student s) throws Exception {
         dao.save(s);

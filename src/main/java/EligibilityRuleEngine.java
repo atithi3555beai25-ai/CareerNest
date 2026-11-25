@@ -1,13 +1,27 @@
+import java.util.ArrayList;
+
 public class EligibilityRuleEngine {
-    public EligibilityResult check(Student s, Job j) {
-        if (s == null || j == null)
+    public EligibilityResult check(Student student, Job job) {
+        if (student == null || job == null) {
             return new EligibilityResult(false, "Student or job not found");
-        if (!new CgpaEligibilityRule().check(s, j))
-            return new EligibilityResult(false, "CGPA too low");
-        if (!new BranchEligibilityRule().check(s, j))
-            return new EligibilityResult(false, "Branch not allowed");
-        if (!new BacklogEligibilityRule().check(s, j))
-            return new EligibilityResult(false, "Too many backlogs");
+        }
+
+        ArrayList<EligibilityRule> rules = new ArrayList<>();
+        rules.add(new CgpaEligibilityRule());
+        rules.add(new BranchEligibilityRule());
+        rules.add(new BacklogEligibilityRule());
+
+        ArrayList<String> reasons = new ArrayList<>();
+        for (EligibilityRule rule : rules) {
+            if (!rule.check(student, job)) {
+                reasons.add(rule.failureMessage());
+            }
+        }
+
+        if (!reasons.isEmpty()) {
+            return new EligibilityResult(false,
+                    "Not eligible: " + String.join(", ", reasons));
+        }
         return new EligibilityResult(true, "Eligible for this job");
     }
 }

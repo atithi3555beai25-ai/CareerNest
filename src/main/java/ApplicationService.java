@@ -1,18 +1,22 @@
-public class ApplicationService {public void apply(int studentId,int jobId)throws Exception{
-    Student s=new StudentDAO().find(studentId);
-    Job j=new JobDAO().find(jobId);
-    if(!new ApplicationValidator().valid(s,j))throw new IllegalArgumentException("Student or job not found");
+public class ApplicationService {
+    public void apply(int studentId, int jobId) throws Exception {
+        ApplicationValidator validator = new ApplicationValidator();
+        validator.validateIds(studentId, jobId);
 
-    EligibilityResult result=new EligibilityService().check(s,j);
+        Student student = new StudentRepository().find(studentId);
+        Job job = new JobRepository().find(jobId);
+        if (!validator.valid(student, job)) {
+            throw new IllegalArgumentException("Student or job not found");
+        }
 
-    if(!result.isEligible())throw new IneligibleStudentException(result.getMessage());
+        EligibilityResult result = new EligibilityService().check(student, job);
+        if (!result.isEligible()) {
+            throw new IneligibleStudentException(result.getMessage());
+        }
 
-    ApplicationDAO dao=new ApplicationDAO();
-
-    if(dao.exists(studentId,jobId))throw new DuplicateApplicationException("Already applied for this job");
-
-    dao.save(studentId,jobId);
-    
-    System.out.println("Application submitted successfully");
+        ApplicationRepository dao = new ApplicationRepository();
+        validator.checkDuplicate(studentId, jobId, dao);
+        dao.save(studentId, jobId);
+        System.out.println("Application submitted successfully");
+    }
 }
- }

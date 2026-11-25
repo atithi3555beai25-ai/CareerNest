@@ -1,5 +1,5 @@
 public class JobManager {
-    private JobDAO dao = new JobDAO();
+    private JobRepository dao = new JobRepository();
 
     public void add(Job j) throws Exception {
         dao.save(j);

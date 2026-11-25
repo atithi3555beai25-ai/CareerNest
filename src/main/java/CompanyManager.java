@@ -1,5 +1,5 @@
 public class CompanyManager {
-    private CompanyDAO dao = new CompanyDAO();
+    private CompanyRepository dao = new CompanyRepository();
 
     public void add(Company c) throws Exception {
         dao.save(c);

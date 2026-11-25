@@ -6,7 +6,7 @@ public class ApplicationHistoryService {
     public void show(int studentId) throws Exception {
 
         ArrayList<Application> applications =
-                new ApplicationDAO().forStudent(studentId);
+                new ApplicationRepository().forStudent(studentId);
 
         if (applications.isEmpty()) {
             System.out.println("No applications found.");

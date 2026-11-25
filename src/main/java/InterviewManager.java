@@ -1,5 +1,5 @@
 public class InterviewManager {
-    private InterviewDAO dao = new InterviewDAO();
+    private InterviewRepository dao = new InterviewRepository();
 
     public void schedule(int applicationId, String date) throws Exception {
         dao.save(new Interview(applicationId, date, "Scheduled"));

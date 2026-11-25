@@ -1,6 +1,5 @@
 target/
+out/
 *.class
+data/
 .env
-.env.*
-.vscode/
-.idea/
