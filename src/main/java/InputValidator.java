@@ -2,13 +2,21 @@
  * Validates user inputs and student domain data for CareerNest.
  */
 public class InputValidator {
+    private static final int MAX_NAME_LENGTH = 100;
+    private static final int MAX_BRANCH_LENGTH = 50;
+    private static final int MIN_YEAR = 1950;
+    private static final int MAX_YEAR = 2100;
 
     public boolean positive(int n) {
         return n > 0;
     }
 
+    public boolean isFiniteNumber(double value) {
+        return Double.isFinite(value);
+    }
+
     public boolean cgpa(double value) {
-        return !Double.isNaN(value) && value >= 0.0 && value <= 10.0;
+        return isFiniteNumber(value) && value >= 0.0 && value <= 10.0;
     }
 
     public boolean nonEmpty(String value) {
@@ -23,14 +31,19 @@ public class InputValidator {
         if (!nonEmpty(name)) {
             return false;
         }
-        return name.trim().matches("[A-Za-z][A-Za-z .'-]*");
+        String trimmed = name.trim();
+        return trimmed.length() <= MAX_NAME_LENGTH
+                && trimmed.matches("[A-Za-z][A-Za-z .'-]*");
     }
 
     public boolean validBranch(String branch) {
         if (!nonEmpty(branch)) {
             return false;
         }
-        return branch.trim().matches("[A-Za-z0-9 &/.-]+");
+        String trimmed = branch.trim();
+        return trimmed.length() <= MAX_BRANCH_LENGTH
+                && trimmed.matches("[A-Za-z0-9 &/.-]+")
+                && trimmed.matches(".*[A-Za-z].*");
     }
 
     public boolean validBacklogs(int backlogs) {
@@ -38,7 +51,7 @@ public class InputValidator {
     }
 
     public boolean validYear(int year) {
-        return year >= 1950 && year <= 2100;
+        return year >= MIN_YEAR && year <= MAX_YEAR;
     }
 
     /**
@@ -55,13 +68,15 @@ public class InputValidator {
             throw new IllegalArgumentException("Student ID must be a positive integer.");
         }
         if (!validName(student.getName())) {
-            throw new IllegalArgumentException("Student name must contain only valid alphabetic characters.");
+            throw new IllegalArgumentException(
+                    "Student name must be 1-" + MAX_NAME_LENGTH + " valid alphabetic characters.");
         }
         if (!validBranch(student.getBranch())) {
-            throw new IllegalArgumentException("Student branch cannot be empty or invalid.");
+            throw new IllegalArgumentException(
+                    "Student branch must be 1-" + MAX_BRANCH_LENGTH + " valid characters.");
         }
         if (!cgpa(student.getCgpa())) {
-            throw new IllegalArgumentException("CGPA must be between 0.0 and 10.0.");
+            throw new IllegalArgumentException("CGPA must be a finite number between 0.0 and 10.0.");
         }
         if (!validBacklogs(student.getBacklogs())) {
             throw new IllegalArgumentException("Backlogs cannot be negative.");

@@ -2,7 +2,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -30,7 +29,11 @@ public class StudentDAO {
     }
 
     public Student find(int id) throws Exception {
-        String sql = "SELECT * FROM students WHERE id=?";
+        if (id <= 0) {
+            return null;
+        }
+
+        String sql = "SELECT id, name, branch, cgpa, backlogs FROM students WHERE id=?";
         try (Connection con = DBConnection.connect();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -46,6 +49,10 @@ public class StudentDAO {
     }
 
     public boolean exists(int id) throws Exception {
+        if (id <= 0) {
+            return false;
+        }
+
         String sql = "SELECT 1 FROM students WHERE id=?";
         try (Connection con = DBConnection.connect();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -60,10 +67,10 @@ public class StudentDAO {
 
     public ArrayList<Student> all() throws Exception {
         ArrayList<Student> students = new ArrayList<>();
-        String sql = "SELECT * FROM students ORDER BY id";
+        String sql = "SELECT id, name, branch, cgpa, backlogs FROM students ORDER BY id";
         try (Connection con = DBConnection.connect();
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 students.add(read(rs));
             }
@@ -75,10 +82,14 @@ public class StudentDAO {
 
     public ArrayList<Student> findByBranch(String branch) throws Exception {
         ArrayList<Student> students = new ArrayList<>();
-        String sql = "SELECT * FROM students WHERE LOWER(branch) = LOWER(?) ORDER BY id";
+        if (branch == null || branch.trim().isEmpty()) {
+            return students;
+        }
+
+        String sql = "SELECT id, name, branch, cgpa, backlogs FROM students WHERE LOWER(branch) = LOWER(?) ORDER BY id";
         try (Connection con = DBConnection.connect();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, branch);
+            ps.setString(1, branch.trim());
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     students.add(read(rs));
@@ -110,6 +121,10 @@ public class StudentDAO {
     }
 
     public boolean delete(int id) throws Exception {
+        if (id <= 0) {
+            return false;
+        }
+
         String sql = "DELETE FROM students WHERE id=?";
         try (Connection con = DBConnection.connect();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -133,6 +148,12 @@ public class StudentDAO {
         String state = e.getSQLState();
         if (state != null && state.startsWith("23")) {
             return new DatabaseException("Constraint error while " + action + ": " + e.getMessage());
+        }
+        if (state != null && state.startsWith("08")) {
+            return new DatabaseException("Connection error while " + action + ": " + e.getMessage());
+        }
+        if (state != null && state.startsWith("42")) {
+            return new DatabaseException("Schema or table error while " + action + ": " + e.getMessage());
         }
         return new DatabaseException("Database error while " + action + ": " + e.getMessage());
     }
