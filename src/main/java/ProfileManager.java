@@ -35,6 +35,9 @@ public class ProfileManager {
     }
 
     public StudentProfile findProfile(int studentId) {
+        if (studentId <= 0) {
+            return null;
+        }
         for (StudentProfile profile : profiles) {
             if (profile.getStudent().getId() == studentId) {
                 return profile;
@@ -51,8 +54,54 @@ public class ProfileManager {
         getOrCreateProfile(student).addSkill(skill);
     }
 
+    public void addSkill(Student student, String skillName) {
+        getOrCreateProfile(student).addSkill(skillName);
+    }
+
     public void addCertification(Student student, Certification certification) {
         getOrCreateProfile(student).addCertification(certification);
+    }
+
+    public void addCertification(Student student, String certificationTitle) {
+        getOrCreateProfile(student).addCertification(certificationTitle);
+    }
+
+    public boolean removeSkill(int studentId, String skillName) {
+        StudentProfile profile = findProfile(studentId);
+        return profile != null && profile.removeSkill(skillName);
+    }
+
+    public boolean removeCertification(int studentId, String certificationTitle) {
+        StudentProfile profile = findProfile(studentId);
+        return profile != null && profile.removeCertification(certificationTitle);
+    }
+
+    public ArrayList<Skill> getSkills(int studentId) {
+        StudentProfile profile = findProfile(studentId);
+        return profile != null ? profile.getSkills() : new ArrayList<>();
+    }
+
+    public ArrayList<Certification> getCertifications(int studentId) {
+        StudentProfile profile = findProfile(studentId);
+        return profile != null ? profile.getCertifications() : new ArrayList<>();
+    }
+
+    public void showSkills(int studentId) {
+        StudentProfile profile = findProfile(studentId);
+        if (profile == null) {
+            System.out.println("Student profile not found.");
+            return;
+        }
+        profile.displaySkills();
+    }
+
+    public void showCertifications(int studentId) {
+        StudentProfile profile = findProfile(studentId);
+        if (profile == null) {
+            System.out.println("Student profile not found.");
+            return;
+        }
+        profile.displayCertifications();
     }
 
     public ArrayList<StudentProfile> getAllProfiles() {
