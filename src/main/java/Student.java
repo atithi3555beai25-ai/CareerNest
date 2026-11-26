@@ -41,8 +41,8 @@ public class Student extends Person {
     }
 
     public void setCgpa(double cgpa) {
-        if (cgpa < 0.0 || cgpa > 10.0) {
-            throw new IllegalArgumentException("CGPA must be between 0.0 and 10.0.");
+        if (!Double.isFinite(cgpa) || cgpa < 0.0 || cgpa > 10.0) {
+            throw new IllegalArgumentException("CGPA must be a finite number between 0.0 and 10.0.");
         }
         this.cgpa = cgpa;
     }

@@ -25,7 +25,11 @@ public class InputHandler {
     public static double decimal(String message) {
         while (true) {
             try {
-                return Double.parseDouble(line(message));
+                double value = Double.parseDouble(line(message));
+                if (validator.isFiniteNumber(value)) {
+                    return value;
+                }
+                System.out.println("Enter a valid finite number.");
             } catch (NumberFormatException e) {
                 System.out.println("Enter a valid number.");
             }
