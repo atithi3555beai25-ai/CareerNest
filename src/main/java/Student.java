@@ -2,9 +2,10 @@ import java.util.Objects;
 
 /**
  * Represents a student registered in CareerNest.
- * Inherits id and name from Person and encapsulates academic attributes.
+ * Inherits id and name from Person, encapsulates academic attributes,
+ * and defines natural ordering by CGPA descending (highest first).
  */
-public class Student extends Person {
+public class Student extends Person implements Comparable<Student> {
     private String branch;
     private double cgpa;
     private int backlogs;
@@ -77,5 +78,24 @@ public class Student extends Person {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
+    }
+
+    /**
+     * Compares students by CGPA in descending order (highest CGPA first),
+     * breaking ties by student ID in ascending order.
+     *
+     * @param other another student to compare against
+     * @return negative if this student has higher CGPA, positive if lower, 0 if equal
+     */
+    @Override
+    public int compareTo(Student other) {
+        if (other == null) {
+            return -1;
+        }
+        int cgpaOrder = Double.compare(other.cgpa, this.cgpa);
+        if (cgpaOrder != 0) {
+            return cgpaOrder;
+        }
+        return Integer.compare(this.getId(), other.getId());
     }
 }

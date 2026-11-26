@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Manages student records by coordinating validation, sorting, and StudentDAO persistence.
@@ -60,8 +59,7 @@ public class StudentManager {
             }
         }
 
-        Comparator<Student> byCgpaDesc = (s1, s2) -> Double.compare(s2.getCgpa(), s1.getCgpa());
-        Collections.sort(sorted, byCgpaDesc.thenComparingInt(Student::getId));
+        Collections.sort(sorted);
         return sorted;
     }
 
