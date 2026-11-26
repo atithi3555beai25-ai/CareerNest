@@ -1,3 +1,7 @@
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.NoSuchFileException;
 import java.sql.SQLException;
 
 /**
@@ -11,23 +15,47 @@ public class ErrorHandler {
      * @param e exception caught during execution
      */
     public void show(Exception e) {
+        show(null, e);
+    }
+
+    /**
+     * Displays a contextual error message with an optional operation label.
+     *
+     * @param context short description of the operation that failed (may be null)
+     * @param e       exception caught during execution
+     */
+    public void show(String context, Exception e) {
+        String prefix = (context != null && !context.trim().isEmpty())
+                ? "[" + context.trim() + "] "
+                : "";
+
         if (e == null) {
-            System.out.println("Error: An unknown error occurred.");
+            System.out.println(prefix + "Error: An unknown error occurred.");
             return;
         }
 
-        if (e instanceof IllegalArgumentException) {
-            System.out.println("Validation Error: " + e.getMessage());
+        if (e instanceof NumberFormatException) {
+            System.out.println(prefix + "Data Format Error: Invalid numeric value (" + e.getMessage() + ").");
+        } else if (e instanceof IllegalArgumentException) {
+            System.out.println(prefix + "Validation Error: " + e.getMessage());
+        } else if (e instanceof InvalidPathException) {
+            System.out.println(prefix + "File Path Error: " + e.getMessage());
+        } else if (e instanceof NoSuchFileException || e instanceof FileNotFoundException) {
+            System.out.println(prefix + "File Not Found: " + e.getMessage());
+        } else if (e instanceof IOException) {
+            System.out.println(prefix + "File I/O Error: " + e.getMessage());
+        } else if (e instanceof SecurityException) {
+            System.out.println(prefix + "Permission Error: " + e.getMessage());
         } else if (e instanceof DuplicateApplicationException) {
-            System.out.println("Duplicate Entry: " + e.getMessage());
+            System.out.println(prefix + "Duplicate Entry: " + e.getMessage());
         } else if (e instanceof IneligibleStudentException) {
-            System.out.println("Eligibility Error: " + e.getMessage());
+            System.out.println(prefix + "Eligibility Error: " + e.getMessage());
         } else if (e instanceof DatabaseException) {
-            System.out.println("Database Error: " + e.getMessage());
+            System.out.println(prefix + "Database Error: " + e.getMessage());
         } else if (e instanceof SQLException sqlEx) {
-            System.out.println("Database Error: " + describeSqlError(sqlEx));
+            System.out.println(prefix + "Database Error: " + describeSqlError(sqlEx));
         } else {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println(prefix + "Error: " + e.getMessage());
         }
     }
 
