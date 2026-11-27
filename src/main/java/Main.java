@@ -100,7 +100,8 @@ public class Main {
             new JobManager().list();
         }
 
-        else if (choice == 7) {
+  
+      else if (choice == 7) {
 
             int studentId = InputHandler.number("Student ID: ");
             int jobId = InputHandler.number("Job ID: ");
