@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 public class JobRepository {
     public ArrayList<Job> all() throws Exception {
         ArrayList<Job> list = new ArrayList<>();
@@ -28,4 +29,17 @@ public class JobRepository {
         list.add(item);
         store(list);
     }
+    public HashSet<String> getUniqueBranches() throws Exception {
+    HashSet<String> branches = new HashSet<>();
+
+    for (Job item : all()) {
+        String branch = item.getBranch();
+
+        if (branch != null && !branch.trim().isEmpty()) {
+            branches.add(branch.trim().toUpperCase());
+        }
+    }
+
+    return branches;
+}
 }
