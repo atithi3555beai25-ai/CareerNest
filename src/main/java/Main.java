@@ -75,7 +75,7 @@ public class Main {
         else if (choice == 4) {
 
             System.out.println("===== Company List =====");
-            new CompanyManager().list();
+            new CompanyManager().listSorted();
         }
 
         else if (choice == 5) {
